@@ -6,7 +6,7 @@
     <br />
     <br />
     <br />
-    <img :src="inputValue" crossorigin="anonymous" id="image" />
+    <img :src="inputValue" crossorigin="anonymous" id="imageToTrain" />
     <br />
     <br />
     <br />
@@ -25,21 +25,18 @@ export default {
     ModelLoader,
   },
   setup() {
-    const isReady = ref(null);
+    const isReady = ref(false);
     const inputValue = ref("https://img2.rtve.es/v/5662467/");
-
     const load = () => {
       loadModel(() => (isReady.value = true));
     };
-
     onBeforeMount(() => {
       load();
     });
 
     const onPredictClick = () => {
-      predict(document.getElementById("image"));
+      predict(document.getElementById("imageToTrain"));
     };
-
     return {
       inputValue,
       onPredictClick,
@@ -67,5 +64,6 @@ a {
 }
 img {
   width: 300px;
+ 
 }
 </style>

@@ -15,19 +15,15 @@ export const loadModel = (callback) => {
 export const addData = (toPredict, label) => {
   const imageSoul = model.infer(toPredict);
   knn.addExample(imageSoul, label);
+  console.log(label, " Added")
 };
 
 export const predict = (toPredict, callback) => {
   const imageSoul = model.infer(toPredict);
+  console.log(imageSoul)
   knn.classify(imageSoul, (err, results) => {
     if (callback) {
       callback(results);
     }
   });
-};
-
-export const getHtmlImage = (src, id) => {
-  var image = new Image();
-  image.id = id;
-  image.src = src;
 };

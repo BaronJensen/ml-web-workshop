@@ -1,4 +1,4 @@
 import { createApp } from "vue";
-import App from "./components/ChihuahuaOrMuffin.vue";
+import App from "./components/ColorPalette";
 
 createApp(App).mount("#app");

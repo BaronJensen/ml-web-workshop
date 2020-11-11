@@ -11,6 +11,7 @@ export const runNeuralNetwoek = () => {
     debug: true,
     inputs: ["r", "g", "b"],
     outputs: ["color"],
+    epochs: 200
   };
 
   // Step 3: initialize your neural network
@@ -33,11 +34,15 @@ export const runNeuralNetwoek = () => {
   // Step 5: normalize your data;
   nn.normalizeData();
 
+
   // Step 6: train your neural network
   const trainingOptions = {
     epochs: 70,
     batchSize: 12,
   };
+
+
+
   nn.train(trainingOptions, finishedTraining);
 
   // Step 7: use the trained model
@@ -51,6 +56,7 @@ export const runNeuralNetwoek = () => {
       r: 20,
       g: 10,
       b: 255,
+      border: 2
     };
     nn.classify(input, handleResults);
   }

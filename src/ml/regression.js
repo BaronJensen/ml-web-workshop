@@ -1,66 +1,79 @@
-import data from "../datasets/classification";
-var nn;
+import data from "../datasets/palettes";
 
-export const runNeuralNetwoek = () => {
+let brain;
+
+export const loadModel = (callback) => {
   const ml5 = window.ml5;
-  // Step 1: load data or create some data
 
-  // Step 2: set your neural network options
-  const options = {
-    task: "classification",
+  let options = {
+    task: 'regression',
     debug: true,
-    inputs: ["r", "g", "b"],
-    outputs: ["color"],
-  };
-
-  // Step 3: initialize your neural network
-  nn = ml5.neuralNetwork(options);
-
-  // Step 4: add data to the neural network
-  data.forEach((item) => {
-    const inputs = {
-      r: item.r,
-      g: item.g,
-      b: item.b,
-    };
-    const output = {
-      color: item.color,
-    };
-
-    nn.addData(inputs, output);
-  });
-
-  // Step 5: normalize your data;
-  nn.normalizeData();
-
-  // Step 6: train your neural network
-  const trainingOptions = {
-    epochs: 70,
-    batchSize: 12,
-  };
-  nn.train(trainingOptions, finishedTraining);
-
-  // Step 7: use the trained model
-  function finishedTraining() {
-    classify();
+    input: 3 * 2,
+    output: 3 * 6
   }
 
-  // Step 8: make a classification
-  function classify() {
-    const input = {
-      r: 20,
-      g: 10,
-      b: 255,
-    };
-    nn.classify(input, handleResults);
+  brain = ml5.neuralNetwork(options);
+  callback();
+};
+
+let counter = 0
+export const addData = () => {
+
+  if(counter >= data.length){
+    console.log("All items added")
+    counter = 0
   }
 
-  // Step 9: define a function to handle the results of your classification
-  function handleResults(error, result) {
+  const item = data[counter]
+
+  const inputs = [
+    ...item["defaultPrimaryColorClass"].background,
+    ...item["accentColorClass"].background ,
+   
+  ]
+  const output = [
+    ...item["darkPrimaryColorClass"].background, 
+    ...item["lightPrimaryColorClass"].background,
+    ...item["textPrimaryColorClass"].color ,
+    ...item["primaryTextColorClass"].color,
+    ...item["secondaryTextColorClass"].color,
+    ...item["dividerColorClass"].borderColor
+  ]
+
+  const addVariation = (variation, value) => (value + variation >= 255) ? (value + variation) : value - 0.33
+  
+  brain.addData(inputs, output)
+  //Let increase our data set adding values between 0.1 and 2 to have more data 
+  brain.addData(inputs.map((val) => addVariation(0.1, val)), output.map((val) => addVariation(0.1, val)))
+  brain.addData(inputs.map((val) => addVariation(1.8, val)), output.map((val) => addVariation(1.8, val)))
+  brain.addData(inputs.map((val) => addVariation(0.75, val)), output.map((val) => addVariation(0.75, val)))
+  brain.addData(inputs.map((val) => addVariation(0.5, val)), output.map((val) => addVariation(0.5, val)))
+  brain.addData(inputs.map((val) => addVariation(2, val)), output.map((val) => addVariation(2, val)))
+  brain.addData(inputs.map((val) => addVariation(0.4, val)), output.map((val) => addVariation(0.4, val)))
+
+  counter++
+};
+
+export const predict = (toPredict, callback) => {
+  console.log(toPredict)
+  brain.predict(toPredict, (error, result) => {
     if (error) {
-      console.error(error);
+      console.error(error, toPredict);
       return;
     }
-    console.log(result); // {label: 'red', confidence: 0.8};
+    if(callback){
+    callback(result?.map(({value}) => value)); 
   }
+ });
 };
+
+
+
+export const train = () => {
+  brain.normalizeData();
+ const trainingOptions = {
+   epochs: 5,
+ };
+ brain.train(trainingOptions, () => {console.log("Training Done!")});
+}
+
