@@ -2,11 +2,17 @@
   <ModelLoader :isReady="isReady">
     <h1>Chihuahua Or Muffin</h1>
     <input v-model="inputValue" v-if="isTrained" placeholder="Add image url here" />
-
+    <br/>
+    <br/>
     <img :src="inputValue" crossorigin="anonymous" id="imageToPredict" />
+    <br/>
+    <br/>
 
     <button v-if="inputValue" @click="onPredictClick">Predict</button>
     <button v-if="!isTrained" @click="onTrainClick">Train</button>
+    
+    <br/>
+    <br/>
 
     <h3 v-if="result">
       {{result}}

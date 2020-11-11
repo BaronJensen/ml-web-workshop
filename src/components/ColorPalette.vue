@@ -1,18 +1,37 @@
 <template>
  <ModelLoader :isReady="isReady">
-    <h1>AI Generated Color palette</h1>
-
+    <h1>AI Generated color palette</h1>
     <button @click="onPredictClick">Predict</button>
     <button @click="onTrainClick">Train</button>
     <button @click="onAddDataClick">Add data</button>
-  <hr />
-  <div class="colorBox" :style="{background: colorInputs?.defaultPrimaryColorClass }">
+    <br />
+    <br />
+    <br />
+  <div class="colorBoxMain" :style="{background: colorInputs?.defaultPrimaryColorClass }">
     <input v-model="primary" placeholder="Primary colors"/>
   </div>
-  <div class="colorBox" :style="{background: colorInputs?.accentColorClass}">
+  <div class="colorBoxMain" :style="{background: colorInputs?.accentColorClass}">
     <input v-model="secondary" placeholder="Secondary colors"/>
   </div>
-  <hr />
+  <br />
+  <br/>
+    <div v-if="result.darkPrimaryColorClass">
+    <div class="colorBox" :style="{background: result.darkPrimaryColorClass}">
+    </div>
+     <div class="colorBox" :style="{background: result.lightPrimaryColorClass}">
+    </div>
+     <div class="colorBox" :style="{background: result.textPrimaryColorClass}">
+    </div>
+     <div class="colorBox" :style="{background: result.primaryTextColorClass}">
+    </div>
+     <div class="colorBox" :style="{background: result.secondaryTextColorClass}">
+    </div>
+     <div class="colorBox" :style="{background: result.dividerColorClass}">
+    </div>
+  </div>
+  
+
+
 
     <div class="card">
     <div class="cardHeader" :style="{background: result.lightPrimaryColorClass}">
@@ -33,10 +52,6 @@
     </div>
   </div>
 
-
-
-
-
     <div class="card">
     <div class="cardHeader" :style="{background: result.darkPrimaryColorClass}">
     </div>
@@ -56,8 +71,6 @@
     </div>
   </div>
 
-
-  
     <div class="card">
     <div class="cardHeader" :style="{background: result.lightPrimaryColorClass}">
     </div>
@@ -96,30 +109,7 @@
          <div class="divider" :style="{borderColor: result.dividerColorClass}"/>
     </div>
   </div>
-  
-  
 
-
- 
-
-
-
-
-
-  <div v-if="result.darkPrimaryColorClass">
-    <div class="colorBox" :style="{background: result.darkPrimaryColorClass}">
-    </div>
-     <div class="colorBox" :style="{background: result.lightPrimaryColorClass}">
-    </div>
-     <div class="colorBox" :style="{background: result.textPrimaryColorClass}">
-    </div>
-     <div class="colorBox" :style="{background: result.primaryTextColorClass}">
-    </div>
-     <div class="colorBox" :style="{background: result.secondaryTextColorClass}">
-    </div>
-     <div class="colorBox" :style="{background: result.dividerColorClass}">
-    </div>
-  </div>
  </ModelLoader>
 </template>
 
@@ -149,29 +139,14 @@ export default {
     const result = ref({});
     const colorInputs = computed(() => getInputColors( [...primary.value.split(","), ...secondary.value.split(",")].reverse()) ) 
 
-
-  
     const onTrainClick = () => {
       train()
       isTrained.value = true
     };
 
-
     const onAddDataClick = () => {
        addData()
     };
-
-    const load = () => {
-     loadModel(() => {
-       isReady.value = true
-     
-     })
-    };
-
-    onBeforeMount(() => {
-      load();
-    });
-
 
   
     const onPredictClick = () => {
@@ -182,7 +157,16 @@ export default {
 
     };
 
-   
+    const load = () => {
+      loadModel(() => {
+       isReady.value = true
+     
+     })
+    };
+
+    onBeforeMount(() => {
+      load();
+    });
 
     return {
       onAddDataClick,
@@ -234,15 +218,25 @@ input {
     text-align: center;
 
 }
-.colorBox{
+.colorBoxMain{
   display: inline-block;
   text-align: center;
   width: 300px;
   height: 100px;
   margin: 5px;
-  border-radius: 12px;
   font-size: 12px;
   border-radius: 50px;
+ box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+}
+.colorBox{
+  display: inline-block;
+  text-align: center;
+  width: 30px;
+  height: 30px;
+  margin: 5px;
+  font-size: 12px;
+  border-radius: 50%;
  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
   transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }

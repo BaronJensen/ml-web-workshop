@@ -13,7 +13,9 @@ export const loadModel = (callback) => {
   }
 
   brain = ml5.neuralNetwork(options);
-  callback();
+  if(callback){
+    callback();
+  }
 };
 
 let counter = 0
@@ -66,8 +68,6 @@ export const predict = (toPredict, callback) => {
   }
  });
 };
-
-
 
 export const train = () => {
   brain.normalizeData();
